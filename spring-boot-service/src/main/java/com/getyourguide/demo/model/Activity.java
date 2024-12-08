@@ -1,4 +1,4 @@
-package com.getyourguide.demo;
+package com.getyourguide.demo.model;
 
 import com.fasterxml.jackson.annotation.*;
 import lombok.*;
@@ -16,4 +16,5 @@ public class Activity {
     private String currency;
     private double rating;
     private boolean specialOffer;
+    private Long supplierId;
 }
