@@ -2,35 +2,41 @@ package com.getyourguide.demo.service;
 
 import com.getyourguide.demo.model.Activity;
 import com.getyourguide.demo.dto.ActivityResponseDto;
-import com.getyourguide.demo.model.Supplier;
 import com.getyourguide.demo.repository.ActivityRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ActivityService {
-    private final ActivityRepository activityRepository;
+    private final ActivityRepository repository;
 
-    public ActivityService(ActivityRepository activityRepository) {
-        this.activityRepository = activityRepository;
+    public ActivityService(ActivityRepository repository) {
+        this.repository = repository;
     }
 
     public List<ActivityResponseDto> getAllActivities() {
-        return activityRepository.findAll().stream()
+        return repository.findAll().stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<ActivityResponseDto> searchByTitle(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return getAllActivities();
+        }
+        return repository.findByTitleContainingIgnoreCase(searchTerm.trim()).stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
 
     private ActivityResponseDto mapToDto(Activity activity) {
-        Optional<Supplier> supplier = activityRepository.findSupplierById(activity.getSupplierId());
-
-        ActivityResponseDto.SupplierInfo supplierInfo = supplier.map(s -> ActivityResponseDto.SupplierInfo.builder()
-                .name(s.getName())
-                .location(String.format("%s, %s", s.getCity(), s.getCountry()))
-                .build()).orElse(null);
+        // For now, supplier info is null since we don't have supplier data
+        ActivityResponseDto.SupplierInfo supplierInfo = ActivityResponseDto.SupplierInfo.builder()
+                .name(null)
+                .location(null)
+                .build();
 
         return ActivityResponseDto.builder()
                 .id(activity.getId())
