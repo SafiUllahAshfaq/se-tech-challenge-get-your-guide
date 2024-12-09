@@ -25,10 +25,19 @@ public class ActivityController {
         this.searchValidator = searchValidator;
     }
 
+    /**
+     * Retrieves activities based on an optional title search parameter.
+     *
+     * @param title Optional search term to filter activities by title
+     * @return List of activities matching the search criteria
+     *
+     * @example GET /activities - Returns all activities
+     * @example GET /activities?title=Paris - Returns activities containing "Paris" in title
+     */
     @GetMapping
     public ResponseEntity<List<ActivityResponseDto>> getActivities(
             @RequestParam(required = false) String title) {
-
+        // Validate and sanitize the search title parameter
         String sanitizedTitle = searchValidator.validateAndSanitizeTitle(title);
 
         ActivitySearchCriteria searchCriteria = ActivitySearchCriteria.builder()
@@ -38,6 +47,10 @@ public class ActivityController {
         return ResponseEntity.ok(activityService.searchActivities(searchCriteria));
     }
 
+    /**
+     * Global exception handler for validation errors.
+     * Converts ValidationException to a proper error response with BAD_REQUEST status.
+     */
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(ValidationException ex) {
         ErrorResponse error = new ErrorResponse(

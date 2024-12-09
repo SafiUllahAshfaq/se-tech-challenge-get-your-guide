@@ -10,6 +10,10 @@ import org.springframework.lang.NonNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service layer handling business logic for activities.
+ * Coordinates between repository and controller, handles data transformation.
+ */
 @Service
 public class ActivityService {
     private final ActivityRepository repository;
@@ -22,6 +26,13 @@ public class ActivityService {
         this.supplierService = supplierService;
     }
 
+    /**
+     * Searches for activities based on provided criteria and transforms them to DTOs.
+     * If no title is provided, returns all activities.
+     *
+     * @param criteria Search criteria containing optional title filter
+     * @return List of activities matching the criteria, transformed to DTOs
+     */
     @NonNull
     public List<ActivityResponseDto> searchActivities(@NonNull ActivitySearchCriteria criteria) {
         if (!criteria.hasTitle()) {
@@ -35,10 +46,17 @@ public class ActivityService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Maps an Activity entity to its DTO representation.
+     * Includes supplier information if available.
+     *
+     * @param activity The activity entity to transform
+     * @return DTO containing activity information and associated supplier details
+     */
     @NonNull
     private ActivityResponseDto mapToDto(@NonNull Activity activity) {
+        // Get supplier information if supplier ID exists
         ActivityResponseDto.SupplierInfo supplierInfo = null;
-
         if (activity.getSupplierId() != null) {
             supplierInfo = supplierService.getSupplierById(activity.getSupplierId())
                     .map(supplier -> ActivityResponseDto.SupplierInfo.builder()
