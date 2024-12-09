@@ -1,9 +1,8 @@
-package com.getyourguide.demo.service;
+package com.getyourguide.demo.supplier.service;
 
-import com.getyourguide.demo.model.Supplier;
-import com.getyourguide.demo.repository.SupplierRepository;
+import com.getyourguide.demo.supplier.model.Supplier;
+import com.getyourguide.demo.supplier.repository.SupplierRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 @Service

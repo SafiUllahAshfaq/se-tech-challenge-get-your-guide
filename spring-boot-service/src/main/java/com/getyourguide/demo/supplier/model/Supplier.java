@@ -1,4 +1,4 @@
-package com.getyourguide.demo.model;
+package com.getyourguide.demo.supplier.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
